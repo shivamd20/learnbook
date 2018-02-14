@@ -12,8 +12,58 @@ import Feeds from './Feeds';
 import MenuAppbar from './AppBar';
 import Info from './Info';
 import AskQues from './AskQues';
+import { queryData } from './request';
 
 class App extends Component {
+
+  componentDidMount(){
+
+    if(!localStorage.hasura_token){
+      window.location.hash = '/login'
+    }else if (!localStorage.info){
+
+      this.fetchInfo();
+
+      window.location.hash = '/info';
+
+    }
+
+  }
+
+  fetchInfo(){
+    queryData({
+      "type": "select",
+      "args": {
+          "table": "user",
+          "columns": [
+              "*"
+          ],
+          "where": {
+              "uid": {
+                  "$eq": localStorage.hasura_id
+              }
+          }
+      }
+  }, 'Bearer '+localStorage.hasura_token).then((e)=>{
+
+    if(e.data.length === 1)
+    localStorage.info = JSON.stringify(e.data[0]) 
+    else {
+      console.log('info not saved')
+    }
+
+
+    window.location.hash = '/';
+
+  }).catch(x=>{
+
+    console.log(x)
+
+    })
+      
+    
+  }
+
   render() {
     return (
       <Router>

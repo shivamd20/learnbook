@@ -53,12 +53,12 @@ class SimpleModal extends React.Component {
       }
   },'Bearer '+localStorage.hasura_token).then(()=>{
 
-    alert('question added')
+    alert('answer added')
  
   }
   ).catch(e=>{
 
-    alert(JSON.stringify(e.response.data)+ JSON.stringify(q))
+    alert(JSON.stringify(e.response.data)+ JSON.stringify(this.props.queId))
    
   })
   }

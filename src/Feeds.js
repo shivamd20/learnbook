@@ -10,9 +10,9 @@ import { queryData } from './request';
 import Textarea from 'material-ui/Input/Textarea';
 const styles = theme => ({
     root: {
-        width: '80%',
-        marginLeft: '10%',
-        marginRight: '10%',
+        width: '98%',
+        marginLeft: '1%',
+        marginRight: '1%',
         backgroundColor: theme.palette.background.paper,
     },
 });
