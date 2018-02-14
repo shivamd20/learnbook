@@ -8,6 +8,8 @@ import { Post } from './Feeds';
 import Textarea from 'material-ui/Input/Textarea';
 import TextField from 'material-ui/TextField/TextField';
 import { queryData } from './request';
+import Select from 'material-ui/Select/Select';
+import MenuItem from 'material-ui/Menu/MenuItem';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -16,9 +18,9 @@ function rand() {
 const styles = theme => ({
   paper: {
     position: 'absolute',
-    width: '80%',
-    margin : '10%',
-    minHeight: '60%',
+    width: '88%',
+    margin : '6%',
+    minWidth : '60px',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     top : '50'
@@ -99,6 +101,20 @@ class SimpleModal extends React.Component {
                     
 
                     </h2>}
+                    <Select
+            value={10}
+            onChange={this.handleChange}
+            displayEmpty
+            name="age"
+            className={classes.selectEmpty}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={10}>Ten</MenuItem>
+            <MenuItem value={20}>Twenty</MenuItem>
+            <MenuItem value={30}>Thirty</MenuItem>
+          </Select>
 
                     {
 

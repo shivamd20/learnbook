@@ -47,13 +47,14 @@ class App extends Component {
   }, 'Bearer '+localStorage.hasura_token).then((e)=>{
 
     if(e.data.length === 1)
-    localStorage.info = JSON.stringify(e.data[0]) 
+    {localStorage.info = JSON.stringify(e.data[0]) 
+
+    window.location.hash = '/';}
     else {
-      console.log('info not saved')
+      console.log('info not saved',e)
     }
 
 
-    window.location.hash = '/';
 
   }).catch(x=>{
 

@@ -7,6 +7,8 @@ import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { queryData } from './request';
 import { query } from './request';
+import Select from 'material-ui/Select/Select';
+import MenuItem from 'material-ui/Menu/MenuItem';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -42,7 +44,12 @@ const styles = theme => ({
 class Info extends React.Component {
   state = {
     open: true,
-    uid : localStorage.hasura_id
+    uid : localStorage.hasura_id,
+    sems : [],
+    branchs : [],
+    semester : 3,
+    branch : 'CSE',
+  
   };
 
 
@@ -58,6 +65,66 @@ class Info extends React.Component {
 
   }
 
+  fetchInfo(){
+    queryData({
+      "type": "select",
+      "args": {
+          "table": "syllbus",
+          "columns": [
+              "*"
+          ],
+          "where": {}
+      }
+  }, 'Bearer '+localStorage.hasura_token).then((e)=>{
+
+   
+    var sems = []
+    var branchs = []
+
+    e.data.forEach(element => {
+
+      // alert(JSON.stringify(element))
+
+     
+
+      sems.push(element.semester);
+
+      branchs.push(element.branch)
+
+    });
+
+  sems=  sems.sort().filter(function(item, pos, ary) {
+      return !pos || item != ary[pos - 1];
+  })
+
+ branchs = branchs.sort().filter(function(item, pos, ary) {
+      return !pos || item != ary[pos - 1];
+  })
+   
+
+    this.setState({
+      branchs,sems,
+      semester:3
+    },()=> alert(JSON.stringify(this.state)))
+
+    
+
+   
+
+
+
+  }).catch(x=>{
+
+    console.log(x)
+
+    })
+      
+    
+  }
+
+  componentWillMount(){
+    this.fetchInfo();
+  }
 
 
 
@@ -82,7 +149,7 @@ class Info extends React.Component {
                   "name": data.name,
                   "college": data.college,
                   "branch": data.branch,
-                  "semster": data.semester
+                  "semster": ""+data.semester
               }
           ]
       }
@@ -93,7 +160,7 @@ class Info extends React.Component {
     window.location.reload()
   }
   ).catch(e=>{
-    alert(JSON.stringify(e.response.data))
+    alert('error: '+JSON.stringify(e.response.data))
    
   })
 
@@ -121,15 +188,77 @@ class Info extends React.Component {
 
             <h2>Enter your information</h2>
 
+
             <br /> <TextField label="uid" value={localStorage.hasura_id} disabled onChange = {this.handleChange('uid')}> </TextField>
             <br />
             <TextField label="name" value={this.state.name}  onChange = {this.handleChange('name')}> </TextField>
             <br />
             <TextField label="college" value={this.state.college} onChange = {this.handleChange('college')}> </TextField>
-            <br />
-            <TextField label="branch" value={this.state.branch} onChange = {this.handleChange('branch')}> </TextField>
-            <br />
-            <TextField label="semester" value={this.state.semester} onChange = {this.handleChange('semester')}> </TextField>
+         
+
+<br/>
+           <span style = {{color : 'gray'}}> Branch  :   </span> 
+          
+
+            <Select
+            value={this.state.branch}
+            onChange={this.handleChange('branch')}
+            displayEmpty
+            name="age"
+            label = 'df'
+            className={classes.selectEmpty}
+            style={{
+              width:'120px'
+            }}
+
+          >
+          
+
+          {
+            this.state.branchs.map((x)=>{
+
+             return  <MenuItem value={x}>{x}</MenuItem>
+            })
+          }
+          </Select>
+
+          <br/>
+
+          <span style = {{color : 'gray'}}> SEMESTER  :  </span> 
+
+          <Select
+            value={this.state.semester}
+            onChange={this.handleChange('semester')}
+            displayEmpty
+            name="age"
+            label = 'df'
+            className={classes.selectEmpty}
+
+            style={{
+              width:'100px'
+            }}
+
+          >
+            <MenuItem style={{
+              width:'100%'
+            }} value="">
+              <em>None</em>
+            </MenuItem>
+
+          {
+            this.state.sems.map((x)=>{
+
+             return  <MenuItem value={x}>{x}</MenuItem>
+            })
+          }
+          </Select>
+
+          <br/>
+
+  
+
+
+       
 
 
             <br />

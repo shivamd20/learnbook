@@ -51,20 +51,20 @@ const styles = theme => ({
 class Post extends React.Component {
 
     state = {
-        votes : Math.round(Math.random()*120)
+        votes: Math.round(Math.random() * 120)
     }
 
-    onUpvote(){
+    onUpvote() {
 
-        
 
-    }
-
-    onDownvote(){
 
     }
 
-   
+    onDownvote() {
+
+    }
+
+
     render() {
 
         return <Card style={
@@ -92,6 +92,8 @@ class Post extends React.Component {
                     this.props.que
                 }
                 </h1>
+
+
                 <p>
                     <br />
                     {
@@ -102,6 +104,14 @@ class Post extends React.Component {
                 {
                     this.props.votes
                 }
+               
+                <i>
+
+                    {
+                        this.props.ansby
+                    }
+
+                </i>
                 <br />
 
                 <Button style={{
@@ -109,37 +119,37 @@ class Post extends React.Component {
                 }} onClick={(e) => {
 
                     this.setState({
-                        votes : this.state.votes+1
+                        votes: this.state.votes + 1
                     })
 
                     e.preventDefault();
                     e.stopPropagation();
 
-                   
+
 
                 }}>upvote ({this.state.votes})</Button>
                 <Button style={{
                     color: 'red'
                 }}
-                onClick={(e) => {
+                    onClick={(e) => {
 
-                    this.setState({
-                        votes : this.state.votes-1
-                    })
+                        this.setState({
+                            votes: this.state.votes - 1
+                        })
 
-                    e.preventDefault();
-                    e.stopPropagation();
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                   
 
-                }}
+
+                    }}
                 >downvote  </Button>
                 <Button style={{
                     color: 'blue'
                 }}
-                    >comment</Button>
+                >comment</Button>
 
-                    <br/>
+                <br />
 
 
             </div>
@@ -149,13 +159,29 @@ class Post extends React.Component {
     }
 }
 
-export {Post}
+export { Post }
 
 
 class InsetList extends React.Component {
 
 
-    componentDidMount(){
+    componentDidMount() {
+
+        var info
+        if (localStorage.info) {
+            info = JSON.parse(localStorage.info)
+
+            if (info) {
+                if (!info.semester)
+                    info.semester = parseInt(info.semster)
+            }
+
+        } else {
+            info = {}
+        }
+
+        console.log("dfghmjn,", 'info', info)
+
 
 
         queryData({
@@ -167,35 +193,56 @@ class InsetList extends React.Component {
                     {
                         "name": "answers",
                         "columns": [
-                            "*"
-                        ]
-                    },
-                    {
-                        "name": "tagsrel",
-                        "columns": [
-                            "*"
-                        ]
-                    },
-                    {
-                        "name": "askedbyrel",
-                        "columns": [
-                            "*"
+                            "*",
+                            {
+                                "name": "ansby",
+                                "columns": [
+                                    "*"
+                                ]
+                            },
+                            {
+                                "name": "votedby",
+                                "columns": [
+                                    "*"
+                                ]
+                            }
                         ]
                     }
                 ],
-                "where": {}
+                "where": {
+                    "ques_tags": {
+                        "questions_tags": {
+                            "syllbus": {
+                                "$and": [
+                                    {
+                                        "semester": {
+                                            "$eq": 3
+                                        }
+                                    },
+                                    {
+                                        "branch": {
+                                            "$eq": info.branch
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
             }
-        },'Bearer 727db6429db60f53c524dc0eb16e7dbf902b78fd93a55003').then(
-           e=> {
-            this.setState({
-                data : e.data
-            })
-           }
-        ).catch(x=>{
+        }, 'Bearer 727db6429db60f53c524dc0eb16e7dbf902b78fd93a55003').then(
+            e => {
+                this.setState({
+                    data: e.data
+                })
+            }
+            ).catch(x => {
 
-            alert('network error please refresh this page')
+                alert('network error please refresh this page' + JSON.stringify(x))
 
-        });
+            });
+
+
 
 
     }
@@ -204,35 +251,35 @@ class InsetList extends React.Component {
         posts: [
             "", "", "", "", "", ""
         ],
-        aopen : false,
-        data : []
+        aopen: false,
+        data: []
     }
     render(props) {
         const { classes } = this.props;
         return (
             <div className={classes.root}>
 
-                <SimpleModal open = {this.state.aopen} onClose = {
-                    (c)=>{
+                <SimpleModal open={this.state.aopen} onClose={
+                    (c) => {
                         this.setState({
-                            aopen : false
+                            aopen: false
                         })
                     }
 
-                } queId = {this.state.queid} data={this.state.data}/>
+                } queId={this.state.queid} data={this.state.data} />
 
                 <List component="nav">
 
 
                     {
-                        this.state.data.map((q,i) => {
+                        this.state.data.map((q, i) => {
 
                             return <ListItem button >
-                                <Post que={q.statement} ans={q.answers[0] && q.answers[0].description} post="sdg" tags onClick={() => {
-                                    
+                                <Post que={q.statement} ans={q.answers[0] && q.answers[0].description} post="sdg" tags ansby={q.answers[0] && q.answers[0].ansby.name} onClick={() => {
+
                                     this.setState({
-                                        aopen : true,
-                                        queid : i
+                                        aopen: true,
+                                        queid: i
                                     })
 
 
